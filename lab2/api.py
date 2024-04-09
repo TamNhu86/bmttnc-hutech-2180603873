@@ -1,55 +1,58 @@
-from cipher.railfence import RailFenceCipher
-from cipher.vigenere import VigenereCipher
-from cipher.playfair import PlayFairCipher
-from cipher.caesar import CaesarCipher
 from flask import Flask, request, jsonify
-app = Flask (__name__)
+from cipher.caesar import CaesarCipher
+from cipher.vigenere import VigenereCipher
+from cipher.railfence import RailFenceCiher
+from cipher.playfair  import PlayFairCipher
+from cipher.transposition import TranspositionCipher
+app = Flask(__name__)
+
 #CAESAR CIPHER ALGORITHM
 caesar_cipher = CaesarCipher()
-
 
 @app.route("/api/caesar/encrypt", methods=["POST"])
 def caesar_encrypt():
     data = request.json
     plain_text = data['plain_text']
-    key = int (data['key'])
-    encrypted_text = caesar_cipher.encrypt_text (plain_text, key)
+    key = int(data['key'])
+    encrypted_text = caesar_cipher.encrypt_text(plain_text, key)
     return jsonify({'encrypted_message': encrypted_text})
 
 @app.route("/api/caesar/decrypt", methods=["POST"])
 def caesar_decrypt():
     data = request.json
     cipher_text = data['cipher_text']
-    key = int(data['key'])
+    key = int (data['key'])
     decrypted_text = caesar_cipher.decrypt_text(cipher_text, key)
-    return jsonify({'decrypted message': decrypted_text})
+    return jsonify({'decrypted_message': decrypted_text})
 
-#VIGENERE CIPHER ALGORITHM
-vigenere_cipher=VigenereCipher()
+#Vigenere
+vigenere_cipher = VigenereCipher()
 
-
-@app.route('/api/vigenere/encrypt', methods=['POST'])
+@app.route("/api/vigenere/encrypt", methods=["POST"])
 def vigenere_encrypt():
-    data=request.json
+    data = request.json
     plain_text = data['plain_text']
     key = data['key']
-    encrypted_text = vigenere_cipher.vigenere_encrypt (plain_text, key)
-    return jsonify({'encrypted_text': encrypted_text})
-@app.route('/api/vigenere/decrypt', methods=['POST'])
+    encrypted_text = vigenere_cipher.vigenere_encrypt(plain_text, key)
+    return jsonify({'encrpyted_text': encrypted_text})
+
+@app.route("/api/vigenere/decrypt", methods=["POST"])
 def vigenere_decrypt():
-    data=request.json
+    data = request.json
     cipher_text = data['cipher_text']
     key = data['key']
-    decrypted_text = vigenere_cipher.vigenere_decrypt (cipher_text, key)
-    return jsonify({'decrypted_text': decrypted_text})
-#RAIFENCE CIPHER
-railfence_cipher = RailFenceCipher()
+    decrypted_text = vigenere_cipher.vigenere_decrypt(cipher_text, key)
+    return jsonify ({'decrypted_text': decrypted_text})
+
+#RAILFENCE CIPHER ALGORIΤΗΜ
+railfence_cipher = RailFenceCiher()
+
 @app.route('/api/railfence/encrypt', methods=['POST'])
 def encrypt():
     data = request.json
     plain_text = data['plain_text']
-    key = int (data['key'])
-    encrypted_text = railfence_cipher.rail_fence_encrypt (plain_text, key)
+    key = int(data['key'])
+    encrypted_text = railfence_cipher.rail_fence_encrypt(plain_text, key)
     return jsonify({'encrypted_text': encrypted_text})
 
 @app.route('/api/railfence/decrypt', methods=['POST'])  
@@ -60,7 +63,8 @@ def decrypt():
     decrypted_text = railfence_cipher.rail_fence_decrypt(cipher_text, key)
     return jsonify({'decrypted_text': decrypted_text})
 
-#playfair
+#PLAYFAIR CIPHER
+
 playfair_cipher =  PlayFairCipher()
 @app.route('/api/playfair/creatematrix', methods=['POST'])
 def playfair_creatematrix():
@@ -86,6 +90,27 @@ def playfair_decrypt():
     playfair_matrix =playfair_cipher.create_playfair_matrix(key)
     decrypted_text = playfair_cipher.playfair_decrypt(cipher_text,playfair_matrix)
     return jsonify({'decrypted_text': decrypted_text})
+
+
+#TRANSPOSITION CIPHER
+
+trasposition_cipher = TranspositionCipher()
+@app.route('/api/trasposition/encrypt', methods=['POST'])
+def trasposition_encrypt():
+    data = request.json
+    plain_text = data['plain_text']
+    key= int(data['key'])
+    encrypted_text = trasposition_cipher.encrypt(plain_text, key)
+    return jsonify({'encrypted_text':encrypted_text})
+    
+@app.route('/api/trasposition/decrypt', methods=['POST'])
+def transposition_decrypt():
+    data = request.json
+    plain_text = data['cipher_text']
+    key= int(data['key'])
+    decrypted_text = trasposition_cipher.decrypt(plain_text, key)
+    return jsonify({'decrypted_text': decrypted_text})
+
 
 #main function
 if __name__ == "__main__":
